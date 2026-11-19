@@ -3,9 +3,11 @@ import { Link } from "react-router";
 import { Icon } from "~/components/brand/Icon";
 import { Sigil } from "~/components/brand/Sigil";
 import { FOOTER_NAV, PRIMARY_NAV } from "~/content/site";
+import type { NavCollection } from "~/lib/nav-collections";
+import { toRoman } from "~/lib/roman";
 import { closeMobileNavDrawer, MOBILE_NAV_DRAWER_ID, openDialogFallback } from "~/lib/cart-drawer";
 
-export function MobileNav() {
+export function MobileNav({ collections = [] }: { collections?: NavCollection[] }) {
   return (
     <dialog
       id={MOBILE_NAV_DRAWER_ID}
@@ -44,6 +46,28 @@ export function MobileNav() {
                   </span>
                   {item.label}
                 </Link>
+                {item.to === "/collections" && collections.length > 0 ? (
+                  <ul
+                    role="list"
+                    aria-label="Collections"
+                    className="mb-4 ms-[2.15rem] border-s border-[#b59660]/20 ps-4"
+                  >
+                    {collections.map((collection, sub) => (
+                      <li key={collection.handle}>
+                        <Link
+                          to={`/collections/${collection.handle}`}
+                          className="flex min-h-11 items-baseline gap-3 text-base text-[#e5d8c5]/80"
+                          onClick={() => closeMobileNavDrawer()}
+                        >
+                          <span className="w-6 text-[0.5625rem] tracking-[0.24em] text-[#b59660]">
+                            {toRoman(sub + 1)}
+                          </span>
+                          {collection.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </li>
             ))}
           </ul>

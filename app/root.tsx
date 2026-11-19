@@ -28,6 +28,7 @@ import { useNonce } from "~/lib/csp";
 import { createRequestCustomerAccount, customerAccountContext } from "~/lib/customer-account";
 import { envContext } from "~/lib/env";
 import { predictiveSearchHandlers } from "~/lib/predictive-search-handlers";
+import { loadNavCollections } from "~/lib/nav-collections";
 import { loadRootLayout } from "~/lib/root-layout";
 import { routeTemplates } from "~/lib/route-templates";
 import { appConfigContext, loadCartContext, type LoadCart } from "~/lib/server/app-context";
@@ -105,11 +106,16 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   const config = context.get(appConfigContext);
   const storefrontClient = context.get(storefrontClientContext);
   const loadCart = context.get(loadCartContext);
-  const [cartResult, layout] = await Promise.all([loadCart(), loadRootLayout(storefrontClient)]);
+  const [cartResult, layout, navCollections] = await Promise.all([
+    loadCart(),
+    loadRootLayout(storefrontClient),
+    loadNavCollections(storefrontClient, config.shopAllHandle),
+  ]);
 
   return {
     cartData: cartResult.data,
     shopInfo: layout.shopInfo,
+    navCollections,
     shopIdentity: resolveShopIdentity(config, layout.shopId),
     currency: layout.currency,
     locale: storefrontClient.locale,

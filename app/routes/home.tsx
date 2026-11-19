@@ -5,6 +5,7 @@ import { Icon } from "~/components/brand/Icon";
 import { Anatomy } from "~/components/home/Anatomy";
 import { CandleHero, type HeroImage } from "~/components/home/CandleHero";
 import { MythologyTeaser } from "~/components/home/MythologyTeaser";
+import { PortalEngraving } from "~/components/brand/PortalEngraving";
 import { RitesGallery, type Rite } from "~/components/home/RitesGallery";
 import { JsonLd } from "~/components/JsonLd";
 import { LineReveal, Reveal, ScrollLitText } from "~/components/motion/Reveal";
@@ -115,6 +116,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </section>
       ) : null}
 
+      <ClosingInvitation />
+
       <section
         aria-labelledby="letters-heading"
         className="relative overflow-hidden border-t border-[#b59660]/15 bg-[#57151f]/[0.18] py-28 md:py-36"
@@ -145,5 +148,48 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
       </section>
     </main>
+  );
+}
+
+/** The second "Shop now": the last thing before the letters and the footer. */
+function ClosingInvitation() {
+  return (
+    <section
+      aria-labelledby="closing-heading"
+      className="relative isolate overflow-hidden border-t border-[#b59660]/15 py-32 md:py-44"
+    >
+      <PortalEngraving className="pointer-events-none absolute inset-0 -z-10 h-full w-full text-[#b59660] opacity-[0.06]" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-[radial-gradient(45%_70%_at_50%_100%,rgb(181_150_96/0.16),transparent)]"
+      />
+      <div className="px-margin relative mx-auto max-w-4xl text-center">
+        <p className="sv-kicker mb-8">◆ The doors are open ◆</p>
+        <LineReveal
+          className="sv-display text-[clamp(2.75rem,1.6rem+5vw,7rem)] text-[#e5d8c5]"
+          lines={[
+            <span key="a" id="closing-heading">
+              Choose your
+            </span>,
+            <span key="b" className="sv-italic text-[#b59660]">
+              darkness.
+            </span>,
+          ]}
+        />
+        <Reveal className="mt-12 flex flex-wrap items-center justify-center gap-4">
+          <Link
+            to="/shop"
+            viewTransition
+            className="sv-button sv-button--solid"
+            data-testid="shop-now-bottom"
+          >
+            Shop now <Icon name="arrow" size={16} className="sv-arrow" />
+          </Link>
+          <Link to="/collections" viewTransition className="sv-button">
+            The collections
+          </Link>
+        </Reveal>
+      </div>
+    </section>
   );
 }

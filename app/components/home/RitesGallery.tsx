@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { Flacon } from "~/components/brand/Flacon";
 import { Icon } from "~/components/brand/Icon";
 import type { ProductCardData } from "~/components/ProductCard";
+import { QuickAdd } from "~/components/QuickAdd";
 import { ShopifyImage } from "~/components/ShopifyImage";
 import type { FragranceConcept } from "~/content/fragrances";
 import { formatPrice } from "~/lib/money";
@@ -110,12 +111,13 @@ function RitePanel({ rite, index }: { rite: Rite; index: number }) {
           <div className="mt-10 flex flex-wrap items-center gap-6">
             {available && product ? (
               <>
+                <QuickAdd product={product} tone="solid" />
                 <Link
                   to={`/products/${product.handle}`}
                   viewTransition
-                  className="sv-button sv-button--solid"
+                  className="sv-link text-[0.6875rem] tracking-[0.26em] text-[#e5d8c5] uppercase"
                 >
-                  Enter the rite <Icon name="arrow" size={16} className="sv-arrow" />
+                  Enter the rite <Icon name="arrow" size={14} className="ms-2 inline" />
                 </Link>
                 <span className="text-sm text-[#a89d8e] tabular-nums">
                   {product.availableForSale ? formatPrice(product.priceRange.minVariantPrice) : "Sold out"}

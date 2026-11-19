@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router";
+import { Link, NavLink, useLocation, useRouteLoaderData } from "react-router";
 
 import { Icon } from "~/components/brand/Icon";
 import { Wordmark } from "~/components/brand/Sigil";
@@ -7,6 +7,9 @@ import { PRIMARY_NAV } from "~/content/site";
 import { useCart } from "~/lib/cart";
 import { CART_DRAWER_ID, SEARCH_DRAWER_ID, openDialogFromLinkClick } from "~/lib/cart-drawer";
 
+import type { loader as rootLoader } from "~/root";
+
+import { CollectionsMenu } from "./CollectionsMenu";
 import { MobileNav, MobileNavTrigger } from "./MobileNav";
 
 function cartCountLabel(count: number) {
@@ -18,7 +21,12 @@ function cartCountLabel(count: number) {
  * obsidian, blurred bar once the page scrolls — via a single passive scroll
  * listener that only toggles a data attribute.
  */
+const NAV_LINK =
+  "sv-link text-[0.6875rem] font-medium tracking-[0.26em] text-[#e5d8c5]/85 uppercase hover:text-[#e5d8c5] aria-[current=page]:text-[#e5d8c5]";
+
 export function Header() {
+  const root = useRouteLoaderData<typeof rootLoader>("root");
+  const navCollections = root?.navCollections ?? [];
   const totalQuantity = useCart((state) => state.data.totalQuantity);
   const { pathname } = useLocation();
   const overHero = pathname === "/";
@@ -45,16 +53,15 @@ export function Header() {
               <MobileNavTrigger />
             </div>
             <nav aria-label="Main" className="hidden items-center gap-8 md:flex">
-              {PRIMARY_NAV.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  viewTransition
-                  className="sv-link text-[0.6875rem] font-medium tracking-[0.26em] text-[#e5d8c5]/85 uppercase hover:text-[#e5d8c5] aria-[current=page]:text-[#e5d8c5]"
-                >
-                  {item.label}
-                </NavLink>
-              ))}
+              {PRIMARY_NAV.map((item) =>
+                item.to === "/collections" && navCollections.length > 0 ? (
+                  <CollectionsMenu key={item.to} collections={navCollections} linkClassName={NAV_LINK} />
+                ) : (
+                  <NavLink key={item.to} to={item.to} viewTransition className={NAV_LINK}>
+                    {item.label}
+                  </NavLink>
+                ),
+              )}
             </nav>
           </div>
 
@@ -112,7 +119,7 @@ export function Header() {
       </header>
       {/* Spacer so content clears the fixed header on non-hero pages */}
       {overHero ? null : <div aria-hidden="true" className="h-[var(--header-height)] shrink-0" />}
-      <MobileNav />
+      <MobileNav collections={navCollections} />
     </>
   );
 }

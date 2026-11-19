@@ -24,6 +24,10 @@ const OPERATIONS = {
   Policies: () => ({
     shop: { privacyPolicy: null, termsOfService: null, shippingPolicy: null, refundPolicy: null },
   }),
+  NavCollections: () => ({
+    collections: { nodes: [{ handle: "fixture-chapter", title: "Fixture Chapter", image: null }] },
+  }),
+  ShopChapters: () => ({ all: null, collections: { nodes: [] } }),
   redirects: () => ({ urlRedirects: { edges: [], nodes: [] } }),
   Sitemap: () => ({
     products: { nodes: [], pageInfo: EMPTY_PAGE },

@@ -169,7 +169,7 @@ export function CandleHero({ image }: { image: HeroImage | null }) {
           <p className="sv-lede max-w-md">{BRAND.description}</p>
           <div className="flex flex-wrap gap-3">
             <Link to="/shop" className="sv-button sv-button--solid" viewTransition>
-              Discover the Rites <Icon name="arrow" size={16} className="sv-arrow" />
+              Shop now <Icon name="arrow" size={16} className="sv-arrow" />
             </Link>
             <Link to="/mythology" className="sv-button" viewTransition>
               The Mythology

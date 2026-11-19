@@ -54,7 +54,7 @@ test.describe("motion", () => {
     const context = await browser.newContext({ reducedMotion: "reduce" });
     const page = await context.newPage();
     await page.goto("/");
-    await expect(page.getByRole("link", { name: /Discover the Rites/ })).toBeVisible({ timeout: 1000 });
+    await expect(page.getByRole("link", { name: /^Shop now/ }).first()).toBeVisible({ timeout: 1000 });
     await context.close();
   });
 });
@@ -145,5 +145,47 @@ test.describe("navigation", () => {
       .first()
       .click();
     await expect(page.getByText(/awaits its first rite|Your bag/i).first()).toBeVisible();
+  });
+});
+
+test.describe("shop and navigation additions", () => {
+  test("collections menu opens from the navbar and lists collections", async ({ page, isMobile }) => {
+    test.skip(isMobile, "desktop menu");
+    await page.goto("/our-story");
+    const trigger = page.getByTestId("collections-menu-trigger");
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await trigger.click();
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    const menu = page.getByTestId("collections-menu");
+    await expect(menu.getByRole("link", { name: /Fixture Chapter/ })).toBeVisible();
+    await expect(menu.getByRole("link", { name: /Fixture Chapter/ })).toHaveAttribute(
+      "href",
+      "/collections/fixture-chapter",
+    );
+    await page.keyboard.press("Escape");
+    await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await expect(trigger).toBeFocused();
+  });
+
+  test("mobile menu lists collections under Collections", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "mobile only");
+    await page.goto("/");
+    await page.getByRole("button", { name: /menu/i }).first().click();
+    await expect(page.getByRole("dialog").getByRole("link", { name: /Fixture Chapter/ })).toBeVisible();
+  });
+
+  test("home offers Shop now at the top and at the bottom", async ({ page }) => {
+    await page.goto("/");
+    const links = page.getByRole("link", { name: /^Shop now/ });
+    await expect(links).toHaveCount(2);
+    for (const link of await links.all()) await expect(link).toHaveAttribute("href", "/shop");
+  });
+
+  test("empty shop shows the three rites as forthcoming", async ({ page }) => {
+    await page.goto("/shop");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Every rite");
+    for (const name of ["Vampiric Royalty", "Darkness", "Hellhound"]) {
+      await expect(page.getByText(name, { exact: true }).first()).toBeVisible();
+    }
   });
 });

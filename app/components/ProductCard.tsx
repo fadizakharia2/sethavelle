@@ -3,6 +3,7 @@ import { Link } from "react-router";
 
 import { Flacon } from "~/components/brand/Flacon";
 import { Sigil } from "~/components/brand/Sigil";
+import { QuickAdd } from "~/components/QuickAdd";
 import { ShopifyImage } from "~/components/ShopifyImage";
 import { conceptForHandle } from "~/content/fragrances";
 import { compareMoney, formatPrice } from "~/lib/money";
@@ -44,6 +45,17 @@ export const PRODUCT_CARD_FRAGMENT = gql(`
         currencyCode
       }
     }
+    # Two are enough to know whether a one-tap add is unambiguous.
+    variants(first: 2) {
+      nodes {
+        id
+        availableForSale
+        price {
+          amount
+          currencyCode
+        }
+      }
+    }
   }
 `);
 
@@ -60,12 +72,15 @@ type ProductCardProps = {
   product: ProductCardData;
   priority?: boolean;
   sizes?: string;
+  /** Show the one-tap "Add to bag" control (default on). */
+  quickAdd?: boolean;
 };
 
 export function ProductCard({
   product,
   priority = false,
   sizes = "(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 46vw",
+  quickAdd = true,
 }: ProductCardProps) {
   const primaryImage = product.featuredImage ?? product.images.nodes[0] ?? null;
   const hoverImage = product.images.nodes.find((image) => image.url !== primaryImage?.url) ?? null;
@@ -148,6 +163,7 @@ export function ProductCard({
             </>
           )}
         </p>
+        {quickAdd ? <QuickAdd product={product} className="mt-4" /> : null}
       </div>
     </article>
   );
