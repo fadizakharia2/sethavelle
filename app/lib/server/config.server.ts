@@ -103,7 +103,12 @@ export class ConfigError extends Error {
 }
 
 const MIN_SECRET_LENGTH = 32;
-const DEFAULT_MOCK_DOMAIN = "mock.shop";
+/**
+ * Preview catalog when no store is connected: mock.shop's fragrance-only demo
+ * store ("The Fragrance Courtyard"). Its products are Shopify sample data,
+ * not SETHAVELLE's. Override with PUBLIC_STORE_DOMAIN=<store>.mock.shop.
+ */
+const DEFAULT_MOCK_DOMAIN = "arabic-attars.mock.shop";
 
 export function parseConfig(env: Env, nodeEnv = process.env.NODE_ENV): AppConfig {
   const parsed = rawSchema.safeParse(env);

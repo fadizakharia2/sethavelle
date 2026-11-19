@@ -22,7 +22,8 @@ pnpm dev                              # http://localhost:3000
 pnpm dev:https                        # needed for Customer Accounts locally
 ```
 
-With no store variables set, development falls back to Shopify's public `mock.shop` demo catalog.
+With no store variables set, development falls back to a Shopify `mock.shop` demo catalog, the
+fragrance-only store `arabic-attars.mock.shop`. Its products are sample data, not SETHAVELLE's.
 Production **refuses to start** without a real store unless `MOCK_SHOP=1` is set explicitly.
 
 ## Scripts

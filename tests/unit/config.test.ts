@@ -197,3 +197,13 @@ describe("toPublicConfig", () => {
     ]);
   });
 });
+
+describe("preview catalog", () => {
+  it("defaults to the fragrance demo store and accepts other mock.shop hosts", () => {
+    expect(parseConfig({}, "development").storefront.storeDomain).toBe("arabic-attars.mock.shop");
+    expect(parseConfig({ PUBLIC_STORE_DOMAIN: "fragrance.mock.shop" }, "development").storefront).toEqual({
+      kind: "mock",
+      storeDomain: "fragrance.mock.shop",
+    });
+  });
+});
