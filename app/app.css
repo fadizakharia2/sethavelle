@@ -1,0 +1,558 @@
+@import "tailwindcss";
+@import "@fontsource-variable/bodoni-moda/wght.css";
+@import "@fontsource-variable/bodoni-moda/wght-italic.css";
+@import "@fontsource-variable/instrument-sans/wght.css";
+@import "./tokens.css";
+
+/* ──────────────────────────────────────────────────────────────────────────
+   SETHAVELLE — house styles
+   Motion principles (in the spirit of Emil Kowalski's craft notes):
+   - UI feedback ≤ 220ms, ease-out; editorial reveals 700–1100ms, expo-out.
+   - Animate transform/opacity/clip-path only. Never from scale(0).
+   - Interruptible CSS transitions for interactive state, not keyframes.
+   - Press feedback scale(0.97). Everything stills under reduced motion.
+   ────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --header-height: 4.5rem;
+    accent-color: var(--color-gold);
+    scrollbar-color: rgb(181 150 96 / 0.35) var(--color-obsidian);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+  }
+
+  body {
+    background-color: var(--color-obsidian);
+    font-feature-settings: "kern", "liga", "ss01";
+    letter-spacing: 0.005em;
+  }
+
+  ::selection {
+    background: var(--color-oxblood);
+    color: var(--color-ivory);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-gold);
+    outline-offset: 3px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="number"],
+  textarea,
+  select {
+    background: transparent;
+    border-color: rgb(181 150 96 / 0.35);
+    --input-padding-y: 0.75rem;
+    --input-padding-x: 0.875rem;
+    --input-font-size: 0.9375rem;
+    transition: border-color 180ms var(--ease-ui);
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 1px solid var(--color-gold);
+    outline-offset: 0;
+    border-color: var(--color-gold);
+  }
+}
+
+@layer components {
+  /* Overline / kicker */
+  .sv-kicker {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  .sv-display {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+
+  .sv-italic {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .sv-lede {
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.7;
+    color: var(--color-on-surface-secondary);
+  }
+
+  /* Hairline rule with a gold center diamond */
+  .sv-rule {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: rgb(181 150 96 / 0.6);
+  }
+  .sv-rule::before,
+  .sv-rule::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(181 150 96 / 0.45), transparent);
+  }
+
+  /* Buttons — rectangular, architectural, with a slow gold sweep on hover */
+  .sv-button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 3.25rem;
+    padding: 0 2rem;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-ivory);
+    border: 1px solid rgb(181 150 96 / 0.55);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      color 220ms var(--ease-ui),
+      border-color 220ms var(--ease-ui),
+      transform 160ms var(--ease-ui);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sv-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-oxblood);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 520ms var(--ease-out-expo);
+  }
+  .sv-button--solid {
+    background: var(--color-oxblood);
+    border-color: color-mix(in oklab, var(--color-oxblood) 70%, var(--color-gold));
+  }
+  .sv-button--solid::before {
+    background: color-mix(in oklab, var(--color-oxblood) 80%, black);
+  }
+  .sv-button--gold {
+    background: var(--color-gold);
+    color: var(--color-obsidian);
+    border-color: var(--color-gold);
+  }
+  .sv-button--gold::before {
+    background: var(--color-gold-bright);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sv-button:hover {
+      border-color: var(--color-gold);
+    }
+    .sv-button:hover::before {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+  .sv-button:active {
+    transform: scale(0.97);
+  }
+  .sv-button:disabled,
+  .sv-button[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+  .sv-button:disabled::before {
+    transform: scaleX(0);
+  }
+  .sv-button .sv-arrow {
+    transition: transform 320ms var(--ease-out-expo);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .sv-button:hover .sv-arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  /* Underline that draws in from the left and leaves to the right */
+  .sv-link {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+  }
+  .sv-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.2em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 420ms var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .sv-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+  .sv-link[aria-current="page"]::after {
+    transform: scaleX(1);
+  }
+
+  /* Film grain — a static, tiny SVG tile; adds tooth to flat blacks */
+  .sv-grain {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("/textures/grain.svg");
+    background-size: 220px 220px;
+  }
+
+  /* Gold-edged card surface */
+  .sv-panel {
+    background: linear-gradient(180deg, rgb(229 216 197 / 0.025), transparent 40%), var(--color-charcoal);
+    border: 1px solid rgb(181 150 96 / 0.18);
+  }
+
+  /* Corner ornaments: four hairline brackets */
+  .sv-frame {
+    position: relative;
+  }
+  .sv-frame::before,
+  .sv-frame::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-color: rgb(181 150 96 / 0.7);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .sv-frame::before {
+    top: -1px;
+    left: -1px;
+    border-width: 1px 0 0 1px;
+  }
+  .sv-frame::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 1px 1px 0;
+  }
+
+  /* Text that rises out of a mask */
+  .sv-reveal-line {
+    display: block;
+    overflow: clip;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .sv-reveal-line > span {
+    display: inline-block;
+  }
+
+  /* Accordion summary marker */
+  .sv-summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .sv-summary::-webkit-details-marker {
+    display: none;
+  }
+  .sv-summary .sv-plus {
+    position: relative;
+    width: 11px;
+    height: 11px;
+  }
+  .sv-summary .sv-plus::before,
+  .sv-summary .sv-plus::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: currentColor;
+    transition: transform 260ms var(--ease-ui);
+  }
+  .sv-summary .sv-plus::after {
+    transform: rotate(90deg);
+  }
+  details[open] > .sv-summary .sv-plus::after {
+    transform: rotate(0deg);
+  }
+
+  /* Navigation progress hairline */
+  .sv-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    z-index: 70;
+    background: linear-gradient(90deg, transparent, var(--color-gold), var(--color-gold-bright));
+    transform-origin: left;
+  }
+}
+
+/* ── Drawers (cart, search, mobile nav) ───────────────────────────────────── */
+.drawer-right,
+.drawer-left {
+  background: var(--color-obsidian);
+  color: var(--color-ivory);
+  transition:
+    transform 420ms var(--ease-drawer),
+    overlay 420ms allow-discrete,
+    display 420ms allow-discrete;
+}
+.drawer-right {
+  transform: translateX(100%);
+  border-inline-start: 1px solid rgb(181 150 96 / 0.25);
+}
+.drawer-left {
+  transform: translateX(-100%);
+  border-inline-end: 1px solid rgb(181 150 96 / 0.25);
+}
+.drawer-right[open],
+.drawer-left[open] {
+  transform: translateX(0);
+}
+@starting-style {
+  .drawer-right[open] {
+    transform: translateX(100%);
+  }
+  .drawer-left[open] {
+    transform: translateX(-100%);
+  }
+}
+.drawer-right::backdrop,
+.drawer-left::backdrop {
+  background: rgb(6 4 5 / 0);
+  backdrop-filter: blur(0);
+  transition:
+    background-color 420ms ease-out,
+    backdrop-filter 420ms ease-out,
+    overlay 420ms allow-discrete,
+    display 420ms allow-discrete;
+}
+.drawer-right[open]::backdrop,
+.drawer-left[open]::backdrop {
+  background: rgb(6 4 5 / 0.72);
+  backdrop-filter: blur(6px);
+}
+@starting-style {
+  .drawer-right[open]::backdrop,
+  .drawer-left[open]::backdrop {
+    background: rgb(6 4 5 / 0);
+    backdrop-filter: blur(0);
+  }
+}
+body:has(.drawer-right[open]),
+body:has(.drawer-left[open]) {
+  overflow: hidden;
+}
+
+/* ── View transitions (route changes) ─────────────────────────────────────── */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: 260ms var(--ease-ui) both sv-vt-out;
+}
+::view-transition-new(root) {
+  animation: 520ms var(--ease-out-expo) 60ms both sv-vt-in;
+}
+::view-transition-group(sv-hero-image) {
+  animation-duration: 560ms;
+  animation-timing-function: var(--ease-out-expo);
+}
+@keyframes sv-vt-out {
+  to {
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+@keyframes sv-vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+}
+
+/* ── Ambient keyframes ────────────────────────────────────────────────────── */
+@keyframes sv-drift {
+  0% {
+    transform: translate3d(-4%, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3%, -2%, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-4%, 0, 0) scale(1);
+  }
+}
+@keyframes sv-flicker {
+  0%,
+  100% {
+    opacity: 0.92;
+  }
+  12% {
+    opacity: 0.78;
+  }
+  20% {
+    opacity: 1;
+  }
+  48% {
+    opacity: 0.86;
+  }
+  70% {
+    opacity: 0.97;
+  }
+}
+@keyframes sv-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sv-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.sv-skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--color-charcoal) 30%,
+    color-mix(in oklab, var(--color-charcoal) 80%, var(--color-gold)) 50%,
+    var(--color-charcoal) 70%
+  );
+  background-size: 200% 100%;
+  animation: sv-shimmer 1.8s linear infinite;
+}
+
+/* ── Reduced motion: everything stills ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ── Candle hero ──────────────────────────────────────────────────────────── */
+.sv-hero {
+  --lx: 50%;
+  --ly: 42%;
+}
+.sv-candle-mask {
+  -webkit-mask-image: radial-gradient(
+    circle 300px at var(--lx) var(--ly),
+    #000 0%,
+    rgb(0 0 0 / 0.55) 38%,
+    transparent 72%
+  );
+  mask-image: radial-gradient(
+    circle 300px at var(--lx) var(--ly),
+    #000 0%,
+    rgb(0 0 0 / 0.55) 38%,
+    transparent 72%
+  );
+}
+.sv-candle-glow {
+  background:
+    radial-gradient(circle 120px at var(--lx) var(--ly), rgb(226 186 120 / 0.14), transparent 70%),
+    radial-gradient(circle 520px at var(--lx) var(--ly), rgb(87 21 31 / 0.28), transparent 70%);
+  mix-blend-mode: screen;
+  animation: sv-flicker 5.5s steps(24, end) infinite;
+}
+@keyframes sv-scrollcue {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+.sv-flacon-glint {
+  animation: sv-glint 7s var(--ease-in-out-quint) infinite;
+}
+@keyframes sv-glint {
+  0%,
+  70%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.12;
+  }
+  85% {
+    transform: translateX(100px);
+    opacity: 0.2;
+  }
+}
+
+/* Mobile nav items cascade in when the drawer opens */
+.drawer-left .sv-mobile-item {
+  opacity: 0;
+  transform: translateX(-12px);
+  transition:
+    opacity 500ms var(--ease-out-expo),
+    transform 500ms var(--ease-out-expo);
+  transition-delay: calc(120ms + var(--i, 0) * 55ms);
+}
+.drawer-left[open] .sv-mobile-item {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  .drawer-left[open] .sv-mobile-item {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}

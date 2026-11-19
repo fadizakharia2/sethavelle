@@ -1,0 +1,10 @@
+dist
+build
+node_modules
+.react-router
+pnpm-lock.yaml
+coverage
+playwright-report
+test-results
+*-graphql-env.d.ts
+public/textures
