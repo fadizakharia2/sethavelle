@@ -45,10 +45,11 @@ export const PRODUCT_CARD_FRAGMENT = gql(`
         currencyCode
       }
     }
-    # Two are enough to know whether a one-tap add is unambiguous.
-    variants(first: 2) {
+    # One more than MAX_CARD_VARIANTS, to know when sizes no longer fit on a card.
+    variants(first: 7) {
       nodes {
         id
+        title
         availableForSale
         price {
           amount
